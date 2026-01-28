@@ -1,14 +1,65 @@
 ---
-// BaseLayout.astro
-const { title } = Astro.props;
+import Navbar from "../components/Navbar.astro";
+const { title = "Arya" } = Astro.props;
 ---
-<html>
-  <head>
-    <title>{title}</title>
-  </head>
-  <body>
-    
-    <slot />  
 
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    <link
+      rel="icon"
+      href="https://res.cloudinary.com/dgu3gae6k/image/upload/v1759546975/abhikr_uvns8e.png"
+      type="image/png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <Navbar />
+
+    <main class="page">
+      <slot />
+    </main>
+
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+
+        /* looks great behind glass */
+        background:
+          radial-gradient(
+            1200px 600px at 20% 10%,
+            rgba(120, 160, 255, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 500px at 80% 0%,
+            rgba(255, 120, 200, 0.14),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 700px at 40% 100%,
+            rgba(120, 255, 190, 0.1),
+            transparent 55%
+          ),
+          #0b0f1a;
+
+        color: rgba(255, 255, 255, 0.92);
+        font-family: "Poppins", system-ui, -apple-system, sans-serif;
+
+      .page {
+        padding: 18px 16px 64px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+    </style>
   </body>
 </html>

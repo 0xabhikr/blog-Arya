@@ -1,0 +1,391 @@
+---
+import { Image } from "astro:assets";
+const links = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "About" },
+];
+---
+
+<header class="nav-wrap" id="navWrap">
+  <nav class="glass-nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="Go to homepage">
+      <Image
+  src="https://res.cloudinary.com/dgu3gae6k/image/upload/v1759546975/abhikr_uvns8e.png"
+  alt="Logo"
+  width={30}
+  height={30}
+  loading="eager"
+/>
+
+      <span>Arya</span>
+    </a>
+
+    <ul class="links desktop" id="desktopLinks">
+      {
+        links.map((l) => (
+          <li>
+            <a class="nav-link" href={l.href}>
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <button
+      class="menu-btn"
+      id="menuBtn"
+      type="button"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobileMenu"
+    >
+      <span class="menu-bars" aria-hidden="true"></span>
+    </button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <ul class="links mobile">
+      {
+        links.map((l) => (
+          <li>
+            <a class="nav-link" href={l.href}>
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</header>
+
+<style>
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-stroke: rgba(255, 255, 255, 0.22);
+    --glass-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.7);
+    --chip: rgba(255, 255, 255, 0.12);
+  }
+
+  /* wrapper so we can pin it, blur background, etc. */
+  .nav-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 14px 14px 10px;
+  }
+
+  .glass-nav {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+
+    padding: 6px 10px;
+    border-radius: 18px;
+
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-stroke);
+    box-shadow: var(--glass-shadow);
+
+    /* iOS-like glass */
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+
+    /* subtle “liquid” sheen */
+    position: relative;
+    overflow: hidden;
+  }
+  .glass-nav::before {
+    content: "";
+    position: absolute;
+    inset: -40% -20%;
+    background: radial-gradient(
+      circle at 20% 20%,
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0) 55%
+    );
+    transform: rotate(8deg);
+    pointer-events: none;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 650;
+    letter-spacing: 0.2px;
+    padding: 8px 10px;
+    border-radius: 14px;
+  }
+  .brand:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.45);
+    outline-offset: 2px;
+  }
+
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 16px;
+    background: var(--chip);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    min-width: 0;
+  }
+  .search-icon {
+    opacity: 0.85;
+    color: var(--text);
+    user-select: none;
+  }
+  .search-input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+  }
+  .search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .search-btn {
+    border: 0;
+    padding: 8px 10px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.16);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .search-btn:active {
+    transform: translateY(1px);
+  }
+
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .nav-link {
+    display: inline-flex;
+    padding: 9px 12px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--muted);
+    border: 1px solid transparent;
+    transition:
+      background 150ms ease,
+      color 150ms ease,
+      border-color 150ms ease;
+  }
+  .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+  .nav-link:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.45);
+    outline-offset: 2px;
+  }
+
+  .menu-btn {
+    display: none;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    position: relative;
+  }
+  .menu-bars {
+    display: block;
+    width: 18px;
+    height: 12px;
+    position: relative;
+  }
+  .menu-bars::before,
+  .menu-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.9);
+  }
+  .menu-bars::before {
+    top: 1px;
+  }
+  .menu-bars::after {
+    bottom: 1px;
+  }
+
+  .mobile-menu {
+    display: none;
+    margin-top: 10px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    overflow: hidden;
+  }
+  .links.mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px;
+  }
+  .links.mobile .nav-link {
+    justify-content: center;
+    padding: 12px 14px;
+  }
+
+  /* Mobile rules */
+  @media (max-width: 860px) {
+    .links.desktop {
+      display: none;
+    }
+    .menu-btn {
+      display: inline-flex;
+      justify-self: end;
+    }
+    .glass-nav {
+      grid-template-columns: auto 1fr auto;
+    }
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    .glass-nav,
+    .mobile-menu,
+    .nav-link {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  if (typeof window !== "undefined") {
+    const wrap = document.getElementById("navWrap");
+    const nav = wrap?.querySelector(".glass-nav");
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    const searchInput = document.getElementById("navSearch");
+    const searchBtn = document.getElementById("searchBtn");
+
+    // Entry animation
+    if (nav && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.fromTo(
+        nav,
+        { y: -18, opacity: 0, filter: "blur(8px)" },
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.65,
+          ease: "power3.out",
+        },
+      );
+
+      // “liquid” hover/parallax
+      const onMove = (e) => {
+        const r = nav.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        gsap.to(nav, {
+          rotationX: -py * 4,
+          rotationY: px * 6,
+          transformPerspective: 700,
+          duration: 0.35,
+          ease: "power2.out",
+        });
+      };
+      const onLeave = () =>
+        gsap.to(nav, {
+          rotationX: 0,
+          rotationY: 0,
+          duration: 0.45,
+          ease: "power2.out",
+        });
+
+      nav.addEventListener("mousemove", onMove);
+      nav.addEventListener("mouseleave", onLeave);
+    }
+
+    // Mobile menu timeline
+    let open = false;
+    const tl = gsap.timeline({ paused: true });
+
+    if (mobileMenu) {
+      tl.fromTo(
+        mobileMenu,
+        { height: 0, opacity: 0, y: -6 },
+        {
+          height: "auto",
+          opacity: 1,
+          y: 0,
+          duration: 0.35,
+          ease: "power3.out",
+        },
+      ).fromTo(
+        mobileMenu.querySelectorAll(".nav-link"),
+        { y: -8, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.22, stagger: 0.05, ease: "power2.out" },
+        "<0.05",
+      );
+    }
+
+    function setMenuState(next) {
+      open = next;
+      if (!menuBtn || !mobileMenu) return;
+
+      menuBtn.setAttribute("aria-expanded", String(open));
+      mobileMenu.setAttribute("aria-hidden", String(!open));
+      mobileMenu.style.display = open ? "block" : "none";
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      if (open) tl.play(0);
+      else tl.reverse();
+    }
+
+    menuBtn?.addEventListener("click", () => setMenuState(!open));
+
+    mobileMenu?.addEventListener("click", (e) => {
+      const a = e.target.closest("a");
+      if (a) setMenuState(false);
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 860 && open) setMenuState(false);
+    });
+
+    function runSearch() {
+      const q = (searchInput?.value || "").trim();
+      if (!q) return;
+      window.location.href = `/search?q=${encodeURIComponent(q)}`;
+    }
+
+    searchBtn?.addEventListener("click", runSearch);
+    searchInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") runSearch();
+    });
+  }
+</script>
