@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+
 const links = [
   { label: "Home", href: "/" },
   { label: "About", href: "About" },
@@ -10,13 +11,12 @@ const links = [
   <nav class="glass-nav" aria-label="Primary navigation">
     <a class="brand" href="/" aria-label="Go to homepage">
       <Image
-  src="https://res.cloudinary.com/dgu3gae6k/image/upload/v1759546975/abhikr_uvns8e.png"
-  alt="Logo"
-  width={30}
-  height={30}
-  loading="eager"
-/>
-
+        src="https://res.cloudinary.com/dgu3gae6k/image/upload/v1759546975/abhikr_uvns8e.png"
+        alt="Logo"
+        width={30}
+        height={30}
+        loading="eager"
+      />
       <span>Arya's | NoteBook</span>
     </a>
 
@@ -44,8 +44,28 @@ const links = [
     </button>
   </nav>
 
-  <!-- Mobile menu -->
-  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <!-- Off-canvas Backdrop -->
+  <div class="backdrop" id="menuBackdrop" aria-hidden="true"></div>
+
+  <!-- Off-canvas Mobile Menu -->
+  <aside
+    class="mobile-menu"
+    id="mobileMenu"
+    aria-hidden="true"
+    aria-label="Mobile navigation"
+  >
+    <div class="mobile-head">
+      <span class="mobile-title">Menu</span>
+      <button
+        class="close-btn"
+        id="closeMenuBtn"
+        type="button"
+        aria-label="Close menu"
+      >
+        ✕
+      </button>
+    </div>
+
     <ul class="links mobile">
       {
         links.map((l) => (
@@ -57,7 +77,7 @@ const links = [
         ))
       }
     </ul>
-  </div>
+  </aside>
 </header>
 
 <style>
@@ -128,46 +148,6 @@ const links = [
     outline-offset: 2px;
   }
 
-  .search {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 10px;
-    border-radius: 16px;
-    background: var(--chip);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    min-width: 0;
-  }
-  .search-icon {
-    opacity: 0.85;
-    color: var(--text);
-    user-select: none;
-  }
-  .search-input {
-    width: 100%;
-    min-width: 0;
-    border: 0;
-    outline: none;
-    background: transparent;
-    color: var(--text);
-    font-size: 14px;
-  }
-  .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  .search-btn {
-    border: 0;
-    padding: 8px 10px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.16);
-    color: var(--text);
-    cursor: pointer;
-  }
-  .search-btn:active {
-    transform: translateY(1px);
-  }
-
   .links {
     list-style: none;
     margin: 0;
@@ -232,23 +212,77 @@ const links = [
     bottom: 1px;
   }
 
+  /* -------- Off-canvas mobile menu -------- */
+
+  /* Backdrop overlay */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 49;
+  }
+
+  /* Off-canvas panel (slides from right) */
   .mobile-menu {
-    display: none;
-    margin-top: 10px;
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    height: calc(100dvh - 24px);
+    width: min(320px, calc(100vw - 24px));
     border-radius: 18px;
+
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
+
     overflow: hidden;
+    z-index: 60;
+
+    /* IMPORTANT: prevent initial flash */
+    visibility: hidden;
+    pointer-events: none;
+
+    /* GSAP controls transform */
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
   }
+
+  .mobile-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 14px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .mobile-title {
+    color: var(--text);
+    font-weight: 650;
+    letter-spacing: 0.2px;
+  }
+
+  .close-btn {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
   .links.mobile {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 8px;
+    padding: 10px;
   }
   .links.mobile .nav-link {
     justify-content: center;
@@ -266,6 +300,14 @@ const links = [
     }
     .glass-nav {
       grid-template-columns: auto 1fr auto;
+    }
+  }
+
+  /* Hide off-canvas on desktop */
+  @media (min-width: 861px) {
+    .mobile-menu,
+    .backdrop {
+      display: none !important;
     }
   }
 
@@ -287,8 +329,8 @@ const links = [
     const nav = wrap?.querySelector(".glass-nav");
     const menuBtn = document.getElementById("menuBtn");
     const mobileMenu = document.getElementById("mobileMenu");
-    const searchInput = document.getElementById("navSearch");
-    const searchBtn = document.getElementById("searchBtn");
+    const backdrop = document.getElementById("menuBackdrop");
+    const closeMenuBtn = document.getElementById("closeMenuBtn");
 
     // Entry animation
     if (nav && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -329,63 +371,103 @@ const links = [
       nav.addEventListener("mouseleave", onLeave);
     }
 
-    // Mobile menu timeline
+    // Off-canvas mobile menu (slide-in) - no initial glitch
     let open = false;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
     const tl = gsap.timeline({ paused: true });
 
-    if (mobileMenu) {
-      tl.fromTo(
-        mobileMenu,
-        { height: 0, opacity: 0, y: -6 },
-        {
-          height: "auto",
-          opacity: 1,
-          y: 0,
-          duration: 0.35,
-          ease: "power3.out",
+    if (mobileMenu && backdrop) {
+      // Hard-set the initial hidden state (prevents flash)
+      gsap.set(mobileMenu, {
+        xPercent: 110,
+        visibility: "hidden",
+        pointerEvents: "none",
+      });
+      gsap.set(backdrop, { opacity: 0, pointerEvents: "none" });
+
+      tl.to(backdrop, {
+        opacity: 1,
+        duration: 0.2,
+        ease: "power2.out",
+        onStart: () => {
+          backdrop.style.pointerEvents = "auto";
         },
-      ).fromTo(
-        mobileMenu.querySelectorAll(".nav-link"),
-        { y: -8, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.22, stagger: 0.05, ease: "power2.out" },
-        "<0.05",
-      );
+      })
+        .to(
+          mobileMenu,
+          {
+            xPercent: 0,
+            duration: 0.35,
+            ease: "power3.out",
+            onStart: () => {
+              mobileMenu.style.visibility = "visible";
+              mobileMenu.style.pointerEvents = "auto";
+              mobileMenu.setAttribute("aria-hidden", "false");
+            },
+          },
+          0,
+        )
+        .fromTo(
+          mobileMenu.querySelectorAll(".nav-link"),
+          { y: 8, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.22,
+            stagger: 0.05,
+            ease: "power2.out",
+          },
+          0.08,
+        );
     }
 
     function setMenuState(next) {
       open = next;
-      if (!menuBtn || !mobileMenu) return;
+      if (!menuBtn || !mobileMenu || !backdrop) return;
 
       menuBtn.setAttribute("aria-expanded", String(open));
       mobileMenu.setAttribute("aria-hidden", String(!open));
-      mobileMenu.style.display = open ? "block" : "none";
+      backdrop.setAttribute("aria-hidden", String(!open));
 
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      if (reducedMotion.matches) {
+        backdrop.style.opacity = open ? "1" : "0";
+        backdrop.style.pointerEvents = open ? "auto" : "none";
 
-      if (open) tl.play(0);
-      else tl.reverse();
+        mobileMenu.style.visibility = open ? "visible" : "hidden";
+        mobileMenu.style.pointerEvents = open ? "auto" : "none";
+        mobileMenu.style.transform = open
+          ? "translateX(0)"
+          : "translateX(110%)";
+        return;
+      }
+
+      if (open) {
+        tl.play(0);
+      } else {
+        tl.reverse().eventCallback("onReverseComplete", () => {
+          mobileMenu.style.visibility = "hidden";
+          mobileMenu.style.pointerEvents = "none";
+          backdrop.style.pointerEvents = "none";
+        });
+      }
     }
 
     menuBtn?.addEventListener("click", () => setMenuState(!open));
+    closeMenuBtn?.addEventListener("click", () => setMenuState(false));
+    backdrop?.addEventListener("click", () => setMenuState(false));
 
     mobileMenu?.addEventListener("click", (e) => {
       const a = e.target.closest("a");
       if (a) setMenuState(false);
     });
 
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 860 && open) setMenuState(false);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && open) setMenuState(false);
     });
 
-    function runSearch() {
-      const q = (searchInput?.value || "").trim();
-      if (!q) return;
-      window.location.href = `/search?q=${encodeURIComponent(q)}`;
-    }
-
-    searchBtn?.addEventListener("click", runSearch);
-    searchInput?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") runSearch();
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 860 && open) setMenuState(false);
     });
   }
 </script>
