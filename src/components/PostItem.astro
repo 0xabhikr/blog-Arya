@@ -1,0 +1,76 @@
+---
+export interface Props {
+  href: string;
+  title: string;
+  dateText: string;   // e.g. "28 Jan, 2026 | 07:30 PM"
+  excerpt: string;
+}
+
+const { href, title, dateText, excerpt } = Astro.props;
+---
+
+<section>
+  <h4 class="p1">
+    <a class="post-link" href={href}>{title}</a>
+  </h4>
+
+  <div class="cla" aria-label="Post date">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="calendar"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M8 2v4" />
+      <path d="M16 2v4" />
+      <rect width="18" height="18" x="3" y="4" rx="2" />
+      <path d="M3 10h18" />
+      <path d="M8 14h.01" />
+      <path d="M12 14h.01" />
+      <path d="M16 14h.01" />
+      <path d="M8 18h.01" />
+      <path d="M12 18h.01" />
+      <path d="M16 18h.01" />
+    </svg>
+
+    <span>{dateText}</span>
+  </div>
+
+  <p>{excerpt}</p>
+</section>
+
+<style>
+  .cla {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .calendar {
+    flex-shrink: 0;
+    color: #fff; /* uses currentColor, so this controls the stroke */
+  }
+
+  .p1 {
+    font-style: initial;
+    font-size: 15px;
+    color: rgb(204, 151, 237);
+  }
+
+  .post-link {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .post-link:hover {
+    text-decoration-thickness: 2px;
+  }
+</style>
